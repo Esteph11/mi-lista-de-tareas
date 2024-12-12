@@ -37,14 +37,15 @@ const TodoList = () => {
                     ...formData,   
                     isComplete: false,   
                     id: Date.now(),   
-                    fecha: new Date().toLocaleString(), 
-                    hour12: true, 
-                    hour: '2-digit', 
-                    minute: '2-digit', 
-                    second: '2-digit', 
-                    day: '2-digit', 
-                    month: '2-digit', 
-                    year: 'numeric' 
+                    fecha: new Date().toLocaleString('es-ES', { 
+                        hour12: true, 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        second: '2-digit', 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric' 
+                    })  
                 };  
                 setTodoArray([...todoArray, todo]);  
             }  
@@ -77,39 +78,61 @@ const TodoList = () => {
     };  
 
     return (  
+        <div className="container mt-5">
+        <div className="card">
+        <div className="card-header text-center">
         <div className="container mt-5">  
+            <h3 className="mb-4 text-center">Agregar Tareas a la Lista</h3>
+
             <form className="input-group mb-3" onSubmit={addTodo}>  
                 <input className="form-control" type="text" name="titulo" placeholder="Título" value={formData.titulo} onChange={handleChange} />  
                 <input className="form-control" type="text" name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={handleChange} />  
                 <button className="btn btn-primary" type="submit">Agregar Tarea</button>  
             </form>  
 
-            <div className="mb-4">  
-                <div className="d-flex align-items-center justify-content-between mb-3">  
-                    <h5>Todo List</h5>  
-                    <button className="btn btn-danger" onClick={deleteAllComplete}>Eliminar Tareas Completadas</button>  
-                </div>  
-
-                {todoArray.map(todo => (  
-                    <div key={todo.id} className="d-flex align-items-center mb-2">  
-                        <input type="checkbox" className="form-check-input mx-2" checked={todo.isComplete} onChange={() => toggleTodo(todo.id)} />  
-                        <div className="flex-grow-1">  
-                            <p className={`m-0 ${todo.isComplete ? 'text-decoration-line-through' : ''}`}>  
-                                {todo.titulo}<br />  
-                                <span className="text-muted">{todo.descripcion}</span><br />  
-                                <small className="text-muted">Fecha: {todo.fecha}</small> {/* Mostrar la fecha */}  
-                            </p>  
-                        </div>  
-                        {todo.isComplete && <span className="badge bg-success">Completada</span>}  
-                        <button className="btn btn-warning mx-1" onClick={() => setTodoEdit(todo.id)}><i className="bi bi-pencil"></i> Editar</button>  
-                        <button className="btn btn-danger mx-1" onClick={() => setModalEliminar({ isOpen: true, todo: todo })}><i className="bi bi-trash"></i> Eliminar</button>  
-                    </div>  
-                ))}  
-
-                <div className="list-group-item">  
-                    <span>Total de tareas: {todoArray.length}, completadas: {completeCount}, pendientes: {pendingCount}</span>  
-                </div>  
+            <div className="mb-4 text-end">  
+                <button className="btn btn-danger" onClick={deleteAllComplete}>Eliminar Tareas Completadas</button>  
             </div>  
+
+            <table className="table table-bordered table-striped">  
+                <thead className="table-secondary">  
+                    <tr>  
+                        <th scope="col">Tarea</th>  
+                        <th scope="col">Título</th>  
+                        <th scope="col">Descripción</th>  
+                        <th scope="col">Fecha</th>  
+                        <th scope="col">Estado</th>  
+                        <th scope="col">Acciones</th>  
+                    </tr>  
+                </thead>  
+                <tbody>  
+                    {todoArray.map((todo, index) => (  
+                        <tr key={todo.id}>  
+                            <th scope="row">{index + 1}</th>  
+                            <td>{todo.titulo}</td>  
+                            <td>{todo.descripcion}</td>  
+                            <td>{todo.fecha}</td>  
+                            <td>
+                                <input type="checkbox" className="form-check-input" checked={todo.isComplete} onChange={() => toggleTodo(todo.id)} />  
+                                {todo.isComplete ? <span className="text-success ms-2">Completada</span> : <span className="text-danger ms-2">Pendiente</span>}
+                            </td>  
+                            <td>  
+                                <button className="btn btn-warning btn-sm mx-1" onClick={() => setTodoEdit(todo.id)}><i className="bi bi-pencil"></i>Editar</button>  
+                                <button className="btn btn-danger btn-sm mx-1" onClick={() => setModalEliminar({ isOpen: true, todo: todo })}><i className="bi bi-trash"></i>Eliminar</button>  
+                            </td>  
+                        </tr>  
+                    ))}  
+                </tbody>  
+            </table>  
+
+            <div className="mt-3">
+                <p className="text-center">
+                    <strong>Total de tareas:</strong> {todoArray.length} | <strong>Completadas:</strong> {completeCount} | <strong>Pendientes:</strong> {pendingCount}
+                </p>
+            </div>
+            </div>
+                </div>
+            </div>
 
             <Modal isOpen={modalEliminar.isOpen} onClose={() => setModalEliminar({ isOpen: false, todo: {} })}>  
                 <div className='text-center py-5'>  
