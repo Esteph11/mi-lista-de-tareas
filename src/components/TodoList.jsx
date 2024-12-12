@@ -33,7 +33,19 @@ const TodoList = () => {
             setTodoEditId(null);  
         } else {  
             if (formData.titulo && formData.descripcion) {  
-                const todo = { ...formData, isComplete: false, id: Date.now() };  
+                const todo = {   
+                    ...formData,   
+                    isComplete: false,   
+                    id: Date.now(),   
+                    fecha: new Date().toLocaleString(), 
+                    hour12: true, 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit', 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric' 
+                };  
                 setTodoArray([...todoArray, todo]);  
             }  
         }  
@@ -84,11 +96,13 @@ const TodoList = () => {
                         <div className="flex-grow-1">  
                             <p className={`m-0 ${todo.isComplete ? 'text-decoration-line-through' : ''}`}>  
                                 {todo.titulo}<br />  
-                                <span className="text-muted">{todo.descripcion}</span>  
+                                <span className="text-muted">{todo.descripcion}</span><br />  
+                                <small className="text-muted">Fecha: {todo.fecha}</small> {/* Mostrar la fecha */}  
                             </p>  
                         </div>  
-                        <button className="btn btn-warning mx-1" onClick={() => setTodoEdit(todo.id)}>🖊 Editar</button>  
-                        <button className="btn btn-danger mx-1" onClick={() => setModalEliminar({ isOpen: true, todo: todo })}>🗑 Eliminar</button>  
+                        {todo.isComplete && <span className="badge bg-success">Completada</span>}  
+                        <button className="btn btn-warning mx-1" onClick={() => setTodoEdit(todo.id)}><i className="bi bi-pencil"></i> Editar</button>  
+                        <button className="btn btn-danger mx-1" onClick={() => setModalEliminar({ isOpen: true, todo: todo })}><i className="bi bi-trash"></i> Eliminar</button>  
                     </div>  
                 ))}  
 
@@ -110,4 +124,4 @@ const TodoList = () => {
     );  
 };  
 
-export default TodoList; 
+export default TodoList;
